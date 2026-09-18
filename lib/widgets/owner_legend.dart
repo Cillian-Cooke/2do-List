@@ -16,7 +16,7 @@ class OwnerLegend extends StatelessWidget {
           Icon(Icons.circle, size: 10, color: owner.color),
           const SizedBox(width: 4),
           Text(
-            owner == EntryOwner.me ? 'You' : owner.label,
+            owner.label,
             style: Theme.of(context).textTheme.bodySmall,
           ),
           if (owner != EntryOwner.values.last) const SizedBox(width: 14),

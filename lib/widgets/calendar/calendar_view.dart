@@ -24,10 +24,14 @@ class CalendarView extends StatefulWidget {
     super.key,
     required this.entries,
     required this.onDaySelected,
+    this.selectedDay,
+    this.compact = false,
   });
 
   final List<TimelineEntry> entries;
   final void Function(DateTime day) onDaySelected;
+  final DateTime? selectedDay;
+  final bool compact;
 
   @override
   State<CalendarView> createState() => _CalendarViewState();
@@ -89,10 +93,42 @@ class _CalendarViewState extends State<CalendarView> {
     final leadingBlanks = firstOfMonth.weekday % 7;
     final today = dateOnly(DateTime.now());
 
+    final selected = widget.selectedDay == null ? null : dateOnly(widget.selectedDay!);
+    final grid = Padding(
+      padding: EdgeInsets.symmetric(horizontal: widget.compact ? 10 : 16),
+      child: GridView.builder(
+        physics: widget.compact
+            ? const NeverScrollableScrollPhysics()
+            : const BouncingScrollPhysics(),
+        shrinkWrap: widget.compact,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 7,
+          mainAxisExtent: widget.compact ? 32 : null,
+        ),
+        itemCount: leadingBlanks + daysInMonth,
+        itemBuilder: (context, index) {
+          if (index < leadingBlanks) return const SizedBox.shrink();
+
+          final day = index - leadingBlanks + 1;
+          final date = DateTime(_visibleMonth.year, _visibleMonth.month, day);
+          final stat = stats[date];
+          return DayCell(
+            day: day,
+            count: stat?.count ?? 0,
+            maxCount: maxCount,
+            hue: _hueFor(stat),
+            isToday: date == today,
+            isSelected: selected == date,
+            onTap: () => widget.onDaySelected(date),
+          );
+        },
+      ),
+    );
+
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+          padding: EdgeInsets.symmetric(horizontal: 4, vertical: widget.compact ? 0 : 4),
           child: Row(
             children: [
               IconButton(
@@ -114,7 +150,7 @@ class _CalendarViewState extends State<CalendarView> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: EdgeInsets.symmetric(horizontal: widget.compact ? 10 : 16),
           child: Row(
             children: _weekdayLabels
                 .map(
@@ -131,32 +167,7 @@ class _CalendarViewState extends State<CalendarView> {
           ),
         ),
         const SizedBox(height: 4),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 7,
-              ),
-              itemCount: leadingBlanks + daysInMonth,
-              itemBuilder: (context, index) {
-                if (index < leadingBlanks) return const SizedBox.shrink();
-
-                final day = index - leadingBlanks + 1;
-                final date = DateTime(_visibleMonth.year, _visibleMonth.month, day);
-                final stat = stats[date];
-                return DayCell(
-                  day: day,
-                  count: stat?.count ?? 0,
-                  maxCount: maxCount,
-                  hue: _hueFor(stat),
-                  isToday: date == today,
-                  onTap: () => widget.onDaySelected(date),
-                );
-              },
-            ),
-          ),
-        ),
+        if (widget.compact) grid else Expanded(child: grid),
       ],
     );
   }

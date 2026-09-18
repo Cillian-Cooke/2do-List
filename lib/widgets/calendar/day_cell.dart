@@ -15,6 +15,7 @@ class DayCell extends StatelessWidget {
     required this.maxCount,
     required this.hue,
     required this.isToday,
+    this.isSelected = false,
     required this.onTap,
   });
 
@@ -23,6 +24,7 @@ class DayCell extends StatelessWidget {
   final int maxCount;
   final Color hue;
   final bool isToday;
+  final bool isSelected;
   final VoidCallback onTap;
 
   @override
@@ -45,7 +47,11 @@ class DayCell extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppDesign.radiusSmall),
-              border: isToday ? Border.all(color: scheme.primary, width: 2) : null,
+              border: isSelected
+                  ? Border.all(color: hue, width: 2.4)
+                  : isToday
+                  ? Border.all(color: scheme.primary, width: 2)
+                  : null,
             ),
             alignment: Alignment.center,
             child: Text(

@@ -1,10 +1,11 @@
 import '../models/timeline_entry.dart';
 
 /// Demo data for the multi-user shell: this showcase runs as the "me"
-/// (pink) account — a girlfriend whose partner (blue) is a second local,
-/// not-yet-networked account. Nothing here is persisted; it's just enough
-/// of a mix of owners/types/dates to show off the color coding, the
-/// Both/Mine/Theirs filter, and the calendar heatmap.
+/// (blue glass) account — a girlfriend whose partner (red glass) is a
+/// second local, not-yet-networked account. Group/shared things are green.
+/// Nothing here is persisted; it's just enough of a mix of owners, types
+/// and dates to show the day board, the stacked glass sheets, and the
+/// calendar heatmap.
 List<TimelineEntry> buildSeedEntries() {
   DateTime at(int offsetDays, [int hour = 9, int minute = 0]) {
     final now = DateTime.now();
@@ -35,9 +36,30 @@ List<TimelineEntry> buildSeedEntries() {
       owner: EntryOwner.me,
     ),
     TaskEntry(
+      title: 'Call the landlord',
+      startDate: at(0, 11, 0),
+      importance: Importance.high,
+      owner: EntryOwner.me,
+    ),
+    TaskEntry(
+      title: 'Pick up dry cleaning',
+      startDate: at(0, 16, 0),
+      owner: EntryOwner.me,
+    ),
+    TaskEntry(
       title: 'Gym session',
       startDate: at(-1, 7, 0),
       owner: EntryOwner.partner,
+    ),
+    TaskEntry(
+      title: 'Reply to Sam\'s email',
+      startDate: at(0, 15, 0),
+      owner: EntryOwner.partner,
+    ),
+    TaskEntry(
+      title: 'Choose a restaurant',
+      startDate: at(0, 12, 0),
+      owner: EntryOwner.shared,
     ),
     TaskEntry(
       title: 'Book dentist appointment',
@@ -95,6 +117,36 @@ List<TimelineEntry> buildSeedEntries() {
       startDate: at(0, 8, 0),
       importance: Importance.low,
       owner: EntryOwner.partner,
+    ),
+    EventEntry(
+      title: 'Focus block',
+      startDate: at(0, 10, 0),
+      endDate: at(0, 12, 0),
+      owner: EntryOwner.me,
+    ),
+    EventEntry(
+      title: 'Lunch with Nia',
+      startDate: at(0, 13, 0),
+      endDate: at(0, 14, 0),
+      owner: EntryOwner.me,
+    ),
+    EventEntry(
+      title: 'Client standup',
+      startDate: at(0, 9, 30),
+      endDate: at(0, 10, 0),
+      owner: EntryOwner.partner,
+    ),
+    EventEntry(
+      title: 'Gym',
+      startDate: at(0, 18, 0),
+      endDate: at(0, 19, 0),
+      owner: EntryOwner.partner,
+    ),
+    EventEntry(
+      title: 'Walk the canal',
+      startDate: at(0, 16, 30),
+      endDate: at(0, 17, 30),
+      owner: EntryOwner.shared,
     ),
     EventEntry(
       title: 'Date night — dinner reservation',

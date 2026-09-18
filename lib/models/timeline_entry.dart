@@ -21,6 +21,8 @@ extension ImportanceLabel on Importance {
 /// which user that is) and "partner" only ever appears on seeded/demo
 /// data — you can create entries as yourself or as [shared], never as
 /// [partner], mirroring "you can only add a thing for yourself or shared".
+///
+/// On the day board these map to blue / red / green glass.
 enum EntryOwner { me, partner, shared }
 
 extension EntryOwnerStyle on EntryOwner {
@@ -33,9 +35,9 @@ extension EntryOwnerStyle on EntryOwner {
   };
 
   String get label => switch (this) {
-    EntryOwner.me => 'Me',
+    EntryOwner.me => 'You',
     EntryOwner.partner => 'Partner',
-    EntryOwner.shared => 'Shared',
+    EntryOwner.shared => 'Group',
   };
 }
 

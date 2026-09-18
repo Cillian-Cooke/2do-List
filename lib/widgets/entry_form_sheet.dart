@@ -34,12 +34,18 @@ Future<void> showEntryFormSheet(
   TimelineEntry? initial,
   void Function(TimelineEntry entry)? onCreate,
   VoidCallback? onSaved,
+  EntryKind defaultKind = EntryKind.task,
+  EntryOwner defaultOwner = EntryOwner.me,
 }) async {
   final result = await showModalBottomSheet<Object>(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (context) => EntryFormSheet(initial: initial),
+    builder: (context) => EntryFormSheet(
+      initial: initial,
+      defaultKind: defaultKind,
+      defaultOwner: defaultOwner,
+    ),
   );
 
   if (result is TimelineEntry) {
@@ -50,9 +56,16 @@ Future<void> showEntryFormSheet(
 }
 
 class EntryFormSheet extends StatefulWidget {
-  const EntryFormSheet({super.key, this.initial});
+  const EntryFormSheet({
+    super.key,
+    this.initial,
+    this.defaultKind = EntryKind.task,
+    this.defaultOwner = EntryOwner.me,
+  });
 
   final TimelineEntry? initial;
+  final EntryKind defaultKind;
+  final EntryOwner defaultOwner;
 
   @override
   State<EntryFormSheet> createState() => _EntryFormSheetState();
@@ -70,12 +83,12 @@ class _EntryFormSheetState extends State<EntryFormSheet> {
   late EntryKind _kind = switch (widget.initial) {
     EventEntry _ => EntryKind.event,
     GoalEntry _ => EntryKind.goal,
-    _ => EntryKind.task,
+    _ => widget.defaultKind,
   };
   late Importance _importance = widget.initial?.importance ?? Importance.medium;
   // You can only ever create something as yourself or shared — "partner"
   // only appears on entries the partner already owns (seed/demo data).
-  late EntryOwner _owner = widget.initial?.owner ?? EntryOwner.me;
+  late EntryOwner _owner = widget.initial?.owner ?? widget.defaultOwner;
   late DateMode _dateMode;
   late DateTime _dueDate;
   late DateTime _startDate;
